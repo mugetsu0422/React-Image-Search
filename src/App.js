@@ -1,6 +1,9 @@
 import { useState } from "react";
 import "./App.css";
 import { useEffect } from "react";
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
+
 
 function SearchBar({ searchText, setSearchText, searchClicked }) {
   return (
@@ -8,7 +11,7 @@ function SearchBar({ searchText, setSearchText, searchClicked }) {
       <div className="searchField">
         <label htmlFor="iname"></label>
         <input type="text" id="iname" name="iname" value={searchText} onChange={(e) => setSearchText(e.target.value)} />
-        <button onClick={searchClicked}>Search</button>
+        <Button onClick={searchClicked}>Search</Button>
       </div>
     </>
   );
@@ -32,6 +35,7 @@ function ImageSearch() {
   const [imageURLs, setImageURLs] = useState([]);
   const [hasReachedBottom, setHasReachedBottom] = useState(false)
   const [page, setPage] = useState(1)
+  const [isImagesLoaded, setIsImagesLoaded] = useState(false)
 
   async function loadImages(search, page) {
     const key = 'kZvumdGEtWnKotZ_OWWwcNNCHIapi7kCOQsoTISm4sc'
@@ -39,7 +43,8 @@ function ImageSearch() {
       `https://api.unsplash.com/search/photos?client_id=${key}&query=${search}&per_page=12&page=${page}`
     );
     const imageResult = await res.json();
-    setImageURLs([...imageURLs, ...(imageResult.results.map((image) => image.urls.small))]);
+    const newImageURLs = imageResult.results.map((image) => image.urls.small)
+    setImageURLs(imageURLs.concat(newImageURLs));
   }
 
   function onScroll() {
@@ -54,7 +59,10 @@ function ImageSearch() {
   }
 
   useEffect(() => {
-    loadImages(finalSearchText, page);
+    setIsImagesLoaded(false)
+    loadImages(finalSearchText, page).then(() => {
+      setIsImagesLoaded(true)
+    });
   }, [finalSearchText, page]);
 
   useEffect(() => {
@@ -77,6 +85,9 @@ function ImageSearch() {
   return (
     <>
       <SearchBar searchText={searchText} setSearchText={setSearchText} searchClicked={searchClicked}></SearchBar>
+      <div className="loading-section">
+        <Spinner style={{visibility: isImagesLoaded ? 'hidden': 'visible'}} className="loading" animation="border" variant="primary" />
+      </div>
       <Gallery imageURLs={imageURLs}></Gallery>
     </>
   );

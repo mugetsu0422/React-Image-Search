@@ -3,6 +3,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
+  /* width: 100%; */
 }
 
 .gallery {
@@ -15,4 +17,19 @@
 
 .img {
   flex-basis: 33.33%;
+}
+
+.loading-section {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.loading {
+  width: 10rem;
+  height: 10rem;
+  font-size: 3rem;
+
 }
