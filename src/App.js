@@ -63,6 +63,7 @@ function ImageSearch() {
     loadImages(finalSearchText, page).then(() => {
       setIsImagesLoaded(true)
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finalSearchText, page]);
 
   useEffect(() => {
